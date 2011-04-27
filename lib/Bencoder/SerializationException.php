@@ -1,6 +1,6 @@
 <?php
 
-namespace Nrk\Bencode;
+namespace Bencoder;
 
 class SerializationException extends \Exception {
     private $_object;

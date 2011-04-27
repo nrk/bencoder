@@ -1,8 +1,8 @@
 <?php
 
-namespace Nrk\Bencode;
+namespace Bencoder;
 
-class Bencoder {
+class Bencode {
     const VERSION = '1.0.0';
 
     /* encoding */

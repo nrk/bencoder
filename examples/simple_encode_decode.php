@@ -2,7 +2,7 @@
 
 require 'shared.php';
 
-use Nrk\Bencode\Bencoder;
+use Bencoder\Bencode;
 
 $structure = array(
     'nickname' => 'nrk',
@@ -10,8 +10,8 @@ $structure = array(
     'length'   => 3,
 );
 
-$encoded = BEncoder::serialize($structure);
-$decoded = BEncoder::unserialize($encoded);
+$encoded = Bencode::serialize($structure);
+$decoded = Bencode::unserialize($encoded);
 
 var_dump($encoded);
 var_dump($decoded);

@@ -26,11 +26,11 @@ let it rot in the meanders of my backups.
 <?php
 require 'autoloader.php';
 
-use Nrk\Bencode\Bencoder;
+use Bencoder\Bencode;
 
 $structure = array("oh", "rly?", "ya", "rly!");
-$encoded = Bencoder::serialize($structure);
-$decoded = Bencoder::unserialize($encoded);
+$encoded = Bencode::serialize($structure);
+$decoded = Bencode::unserialize($encoded);
 ```
 
 ### Author ###
