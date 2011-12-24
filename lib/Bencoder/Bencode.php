@@ -299,4 +299,32 @@ class Bencode
 
         return $integer;
     }
+
+    /**
+     * Converts Bencode representation to JSON representation.
+     *
+     * @param string $bencode Buffer containing the Bencode string.
+     * @return string
+     */
+    public static function convertToJSON($bencode, $options = 0)
+    {
+        $object = self::unserialize($bencode);
+        $json = json_encode($object, $options);
+
+        return $json;
+    }
+
+    /**
+     * Converts JSON representation to Bencode representation.
+     *
+     * @param string $json Buffer containing the JSON string.
+     * @return string
+     */
+    public static function convertFromJSON($json)
+    {
+        $object = json_decode($json, true);
+        $bencode = self::serialize($object);
+
+        return $bencode;
+    }
 }

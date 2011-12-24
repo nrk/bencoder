@@ -264,4 +264,26 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('xubuntu-10.10-alternate-amd64.iso', $torrent['info']['name']);
         $this->assertSame(699566080 ,$torrent['info']['length']);
     }
+
+    /**
+     * @group serialization
+     */
+    public function testConversionFromJSON()
+    {
+        $json = '{"a":1,"b":2,"list":[1,2,"foo","bar"]}';
+        $bencode = 'd1:ai1e1:bi2e4:listli1ei2e3:foo3:baree';
+
+        $this->assertSame($bencode, B::convertFromJSON($json));
+    }
+
+    /**
+     * @group deserialization
+     */
+    public function testConversionToJSON()
+    {
+        $json = '{"a":1,"b":2,"list":[1,2,"foo","bar"]}';
+        $bencode = 'd1:ai1e1:bi2e4:listli1ei2e3:foo3:baree';
+
+        $this->assertSame($json, B::convertToJSON($bencode));
+    }
 }
