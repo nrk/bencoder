@@ -251,4 +251,17 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($tree, B::unserialize($buffer));
     }
+
+    /**
+     * @group deserialization
+     */
+    public function testDeserializationFromFile()
+    {
+        $torrent = B::unserializeFromFile(__DIR__.'/../../examples/xubuntu-10.10-alternate-amd64.iso.torrent');
+
+        $this->assertInternalType('array', $torrent);
+        $this->assertInternalType('array', $torrent['info']);
+        $this->assertSame('xubuntu-10.10-alternate-amd64.iso', $torrent['info']['name']);
+        $this->assertSame(699566080 ,$torrent['info']['length']);
+    }
 }

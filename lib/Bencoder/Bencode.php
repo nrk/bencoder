@@ -173,6 +173,24 @@ class Bencode
     }
 
     /**
+     * Handles the deserialization of the Bencode representation of an object from a file.
+     *
+     * @param string $path Path of the file.
+     * @return mixed
+     */
+    public static function unserializeFromFile($path)
+    {
+        if (!file_exists($path)) {
+            throw new \RuntimeException("File $path does not exist");
+        }
+
+        $buffer = file_get_contents($path);
+        $object = self::unserialize($buffer);
+
+        return $object;
+    }
+
+    /**
      * Decodes the next Bencode entry from the buffer.
      *
      * @param string $buffer Buffer containing the Bencode string.
