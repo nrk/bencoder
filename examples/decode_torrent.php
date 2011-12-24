@@ -1,6 +1,6 @@
 <?php
 
-require 'shared.php';
+require __DIR__.'/../autoload.php';
 
 use Bencoder\Bencode;
 
