@@ -11,20 +11,37 @@
 
 namespace Bencoder;
 
+/**
+ * Main class that exposes methods to serialize/unserialize objects to/from
+ * Bencoded string buffers.
+ *
+ * @link http://en.wikipedia.org/wiki/Bencode
+ * @author Daniele Alessandri <suppakilla@gmail.com>
+ */
 class Bencode
 {
     const VERSION = '1.0.0';
 
-    /* encoding */
-
-    public static function serialize($array)
+    /**
+     * Serializes an object to its Bencode representation.
+     *
+     * @param int|string|array|boolean $object Object to serialize.
+     * @return string
+     */
+    public static function serialize($object)
     {
         $serialized = "";
-        self::decideEncode($array, $serialized);
+        self::decideEncode($object, $serialized);
 
         return $serialized;
     }
 
+    /**
+     * Handles the serialization of one of the supported object types.
+     *
+     * @param int|string|array|boolean $object Object to serialize.
+     * @param string $serialized Reference to the serialization buffer.
+     */
     private static function decideEncode($object, &$serialized)
     {
         switch ($type = gettype($object)) {
@@ -50,11 +67,23 @@ class Bencode
         }
     }
 
+    /**
+     * Handles the serialization of a string object.
+     *
+     * @param string $string String to serialize.
+     * @param string $serialized Reference to the serialization buffer.
+     */
     private static function encodeString($string, &$serialized)
     {
         $serialized .= strlen($string) . ":$string";
     }
 
+    /**
+     * Handles the serialization of an array object.
+     *
+     * @param string $list Array to serialize.
+     * @param string $serialized Reference to the serialization buffer.
+     */
     private static function encodeList($list, &$serialized)
     {
         if (empty($list)) {
@@ -69,6 +98,12 @@ class Bencode
         $serialized .= "e";
     }
 
+    /**
+     * Handles the serialization of a named array object.
+     *
+     * @param string $list Named array to serialize.
+     * @param string $serialized Reference to the serialization buffer.
+     */
     private static function encodeDictionary($dictionary, &$serialized)
     {
         if (empty($dictionary)) {
@@ -84,6 +119,14 @@ class Bencode
         $serialized .= "e";
     }
 
+    /**
+     * Inspects the passed array and returns a serialization strategy
+     * depending on the type of its keys. If the array contains at least
+     * one string key, it is treated as a named array.
+     *
+     * @param array $array Array to serialize serialize.
+     * @return string
+     */
     private static function getArraySerializer($array)
     {
         if (empty($array)) {
@@ -99,6 +142,12 @@ class Bencode
         return 'encodeList';
     }
 
+    /**
+     * Sorts a named array by its keys.
+     *
+     * @param array $dictionary Named array to sort.
+     * @param array
+     */
     private static function sortDictionary($dictionary)
     {
         if (!ksort($dictionary, SORT_STRING)) {
@@ -108,8 +157,13 @@ class Bencode
         return $dictionary;
     }
 
-    /* decoding */
-
+    /**
+     * Handles the deserialization of a string containing the Bencode representation
+     * of an object.
+     *
+     * @param string $buffer Buffer containing the serialized data.
+     * @return mixed
+     */
     public static function unserialize($buffer)
     {
         $offset = 0;
@@ -118,6 +172,13 @@ class Bencode
         return $object;
     }
 
+    /**
+     * Decodes the next Bencode entry from the buffer.
+     *
+     * @param string $buffer Buffer containing the Bencode string.
+     * @param int $offset Current position in the buffer.
+     * @return mixed
+     */
     private static function decodeEntry($buffer, &$offset)
     {
         $offsetMarker = $offset;
@@ -173,6 +234,13 @@ class Bencode
         }
     }
 
+    /**
+     * Decodes a string from the buffer.
+     *
+     * @param string $buffer Buffer containing the Bencode string.
+     * @param int $offset Current position in the buffer.
+     * @return string
+     */
     private static function getStringFromBuffer($buffer, &$offset)
     {
         if (($length = self::getIntegerFromBuffer($buffer, $offset, ':')) < 0) {
@@ -189,6 +257,14 @@ class Bencode
         return $string;
     }
 
+    /**
+     * Decodes an integer from the buffer.
+     *
+     * @param string $buffer Buffer containing the Bencode string.
+     * @param int $offset Current position in the buffer.
+     * @param string $delimiter Delimiter for the serialized representation of the integer.
+     * @return int
+     */
     private static function getIntegerFromBuffer($buffer, &$offset, $delimiter = 'e')
     {
         $numeric = '';
