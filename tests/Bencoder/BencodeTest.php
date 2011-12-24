@@ -151,7 +151,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group deserializations
+     * @group deserialization
      */
     public function testDeserializationAllowsIntegerKeysForDictionaries()
     {
@@ -187,7 +187,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group deserializations
+     * @group deserialization
      */
     public function testDeserializationHandlesSequenceOfEmptyStrings()
     {
@@ -195,7 +195,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group deserializations
+     * @group deserialization
      * @expectedException Bencoder\DeserializationException
      * @expectedExceptionMessage Invalid integer: 1.23
      */
@@ -205,7 +205,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group deserializations
+     * @group deserialization
      * @expectedException Bencoder\DeserializationException
      * @expectedExceptionMessage Unknown prefix: a
      */
@@ -215,7 +215,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group serializations
+     * @group serialization
      */
     public function testComplexSerialization()
     {
@@ -233,9 +233,8 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, B::serialize($tree));
     }
 
-
     /**
-     * @group deserializations
+     * @group deserialization
      */
     public function testComplexDeserialization()
     {
