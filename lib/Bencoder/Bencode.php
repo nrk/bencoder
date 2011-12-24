@@ -33,9 +33,7 @@ class Bencode
                 break;
 
             case 'boolean':
-                if ($object === true) {
-                    $serialized .= "de";
-                }
+                $serialized .= $object === true ? 'i1e' : 'i0e';
                 break;
 
             default:
@@ -64,7 +62,7 @@ class Bencode
 
     private static function encodeDictionary($dictionary, &$serialized)
     {
-        if (is_bool($dictionary)) {
+        if (empty($dictionary)) {
             $serialized .= "de";
             return;
         }
@@ -170,6 +168,10 @@ class Bencode
     {
         if (($length = self::getIntegerFromBuffer($buffer, $offset, ':')) < 0) {
             throw new DeserializationException("Invalid string length: $length", $offset);
+        }
+
+        if ($length == 0) {
+            return '';
         }
 
         $string = substr($buffer, $offset, $length);
