@@ -2,8 +2,8 @@
 
 ### About ###
 
-__Bencoder__ is an utility class implemented in pure PHP that handles the serialization and deserialization of the
-[Bencode](http://en.wikipedia.org/wiki/Bencode) serialization format.
+__Bencoder__ is an utility class implemented in pure PHP that handles the serialization and deserialization of objects
+using the [Bencode](http://en.wikipedia.org/wiki/Bencode) encoding format.
 
 The original implementation of this class dates back to the early months of 2004 and it has been somewhat adapted
 and updated in order to work with modern versions of the PHP interpreter right before making it public. It does
@@ -27,8 +27,8 @@ require 'autoloader.php';
 use Bencoder\Bencode;
 
 $structure = array("oh", "rly?", "ya", "rly!");
-$encoded = Bencode::serialize($structure);
-$decoded = Bencode::unserialize($encoded);
+$encoded = Bencode::encode($structure);
+$decoded = Bencode::decode($encoded);
 ```
 
 ### Author ###

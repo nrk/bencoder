@@ -19,8 +19,8 @@ $structure = array(
     'length'   => 3,
 );
 
-$encoded = Bencode::serialize($structure);
-$decoded = Bencode::unserialize($encoded);
+$encoded = Bencode::encode($structure);
+$decoded = Bencode::decode($encoded);
 
 var_dump($encoded);
 var_dump($decoded);

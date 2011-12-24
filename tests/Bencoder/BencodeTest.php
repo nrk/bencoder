@@ -19,205 +19,205 @@ use Bencoder\Bencode as B;
 class BencodeTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testIntegerSerialization()
+    public function testIntegerEncoding()
     {
-        $this->assertSame('i0e', B::serialize(0));
-        $this->assertSame('i1e', B::serialize(1));
+        $this->assertSame('i0e', B::encode(0));
+        $this->assertSame('i1e', B::encode(1));
 
-        $this->assertSame('i42e', B::serialize(42));
-        $this->assertSame('i-42e', B::serialize(-42));
+        $this->assertSame('i42e', B::encode(42));
+        $this->assertSame('i-42e', B::encode(-42));
 
-        $this->assertSame('i2147483647e', B::serialize(2147483647));
-        $this->assertSame('i-2147483647e', B::serialize(-2147483647));
+        $this->assertSame('i2147483647e', B::encode(2147483647));
+        $this->assertSame('i-2147483647e', B::encode(-2147483647));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testIntegerDeserialization()
+    public function testIntegerDecoding()
     {
-        $this->assertSame(0, B::unserialize('i0e'));
-        $this->assertSame(1, B::unserialize('i1e'));
+        $this->assertSame(0, B::decode('i0e'));
+        $this->assertSame(1, B::decode('i1e'));
 
-        $this->assertSame(42, B::unserialize('i42e'));
-        $this->assertSame(-42, B::unserialize('i-42e'));
+        $this->assertSame(42, B::decode('i42e'));
+        $this->assertSame(-42, B::decode('i-42e'));
 
-        $this->assertSame(2147483647, B::unserialize('i2147483647e'));
-        $this->assertSame(-2147483647, B::unserialize('i-2147483647e'));
+        $this->assertSame(2147483647, B::decode('i2147483647e'));
+        $this->assertSame(-2147483647, B::decode('i-2147483647e'));
     }
 
     /**
-     * @group serialization
-     * @expectedException Bencoder\SerializationException
-     * @expectedExceptionMessage Invalid type for serialization: double
+     * @group encoding
+     * @expectedException Bencoder\EncodingException
+     * @expectedExceptionMessage Invalid type for encoding: double
      */
-    public function testIntegerSerializationFailsOnBigNumbers()
+    public function testIntegerEncodingFailsOnBigNumbers()
     {
-        B::serialize(2147483650);
+        B::encode(2147483650);
     }
 
     /**
-     * @group deserialization
-     * @expectedException Bencoder\DeserializationException
+     * @group decoding
+     * @expectedException Bencoder\DecodingException
      * @expectedExceptionMessage Invalid integer: -2147483650
      */
-    public function testIntegerDeserializationFailsOnBigNumbers()
+    public function testIntegerDecodingFailsOnBigNumbers()
     {
-        B::unserialize('i-2147483650e');
+        B::decode('i-2147483650e');
     }
 
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testStringSerialization()
+    public function testStringEncoding()
     {
-        $this->assertSame('0:', B::serialize(''));
-        $this->assertSame('2:  ', B::serialize('  '));
-        $this->assertSame('3:'.chr(0).chr(127).chr(255), B::serialize(chr(0).chr(127).chr(255)));
+        $this->assertSame('0:', B::encode(''));
+        $this->assertSame('2:  ', B::encode('  '));
+        $this->assertSame('3:'.chr(0).chr(127).chr(255), B::encode(chr(0).chr(127).chr(255)));
 
-        $this->assertSame('15:This is a test.', B::serialize('This is a test.'));
-        $this->assertSame('9:123456789', B::serialize('123456789'));
+        $this->assertSame('15:This is a test.', B::encode('This is a test.'));
+        $this->assertSame('9:123456789', B::encode('123456789'));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testStringDeserialization()
+    public function testStringDecoding()
     {
-        $this->assertSame('', B::unserialize('0:'));
-        $this->assertSame('  ', B::unserialize('2:  '));
-        $this->assertSame(chr(0).chr(127).chr(255), B::unserialize('3:'.chr(0).chr(127).chr(255)));
+        $this->assertSame('', B::decode('0:'));
+        $this->assertSame('  ', B::decode('2:  '));
+        $this->assertSame(chr(0).chr(127).chr(255), B::decode('3:'.chr(0).chr(127).chr(255)));
 
-        $this->assertSame('This is a test.', B::unserialize('15:This is a test.'));
-        $this->assertSame('123456789', B::unserialize('9:123456789'));
+        $this->assertSame('This is a test.', B::decode('15:This is a test.'));
+        $this->assertSame('123456789', B::decode('9:123456789'));
     }
 
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testArraySerialization()
+    public function testArrayEncoding()
     {
-        $this->assertSame('le', B::serialize(array()));
+        $this->assertSame('le', B::encode(array()));
 
-        $this->assertSame('li1ei2ei3ee', B::serialize(array(1,2,3)));
-        $this->assertSame('l1:a1:b1:ce', B::serialize(array('a','b','c')));
-        $this->assertSame('l1:ai1e1:bi2e1:ci3ee', B::serialize(array('a',1,'b',2,'c',3)));
+        $this->assertSame('li1ei2ei3ee', B::encode(array(1,2,3)));
+        $this->assertSame('l1:a1:b1:ce', B::encode(array('a','b','c')));
+        $this->assertSame('l1:ai1e1:bi2e1:ci3ee', B::encode(array('a',1,'b',2,'c',3)));
 
-        $this->assertSame('llee', B::serialize(array(array())));
-        $this->assertSame('ll1:ai1eel1:bi2eel1:ci3eee', B::serialize(array(array('a',1),array('b',2),array('c',3))));
+        $this->assertSame('llee', B::encode(array(array())));
+        $this->assertSame('ll1:ai1eel1:bi2eel1:ci3eee', B::encode(array(array('a',1),array('b',2),array('c',3))));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testArrayDeserialization()
+    public function testArrayDecoding()
     {
-        $this->assertSame(array(), B::unserialize('le'));
+        $this->assertSame(array(), B::decode('le'));
 
-        $this->assertSame(array(1,2,3), B::unserialize('li1ei2ei3ee'));
-        $this->assertSame(array('a','b','c'), B::unserialize('l1:a1:b1:ce'));
-        $this->assertSame(array('a',1,'b',2,'c',3), B::unserialize('l1:ai1e1:bi2e1:ci3ee'));
+        $this->assertSame(array(1,2,3), B::decode('li1ei2ei3ee'));
+        $this->assertSame(array('a','b','c'), B::decode('l1:a1:b1:ce'));
+        $this->assertSame(array('a',1,'b',2,'c',3), B::decode('l1:ai1e1:bi2e1:ci3ee'));
 
-        $this->assertSame(array(array()), B::unserialize('llee'));
-        $this->assertSame(array(array('a',1),array('b',2),array('c',3)), B::unserialize('ll1:ai1eel1:bi2eel1:ci3eee'));
+        $this->assertSame(array(array()), B::decode('llee'));
+        $this->assertSame(array(array('a',1),array('b',2),array('c',3)), B::decode('ll1:ai1eel1:bi2eel1:ci3eee'));
     }
 
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testNamedArraySerialization()
+    public function testNamedArrayEncoding()
     {
-        $this->assertSame('d1:ai1e1:bi2e1:ci3ee', B::serialize(array('c'=>3,'a'=>1,'b'=>2)));
-        $this->assertSame('d1:0i2e1:ai1e1:ci3ee', B::serialize(array('a'=>1, 2,'c'=>3)));
+        $this->assertSame('d1:ai1e1:bi2e1:ci3ee', B::encode(array('c'=>3,'a'=>1,'b'=>2)));
+        $this->assertSame('d1:0i2e1:ai1e1:ci3ee', B::encode(array('a'=>1, 2,'c'=>3)));
 
-        $this->assertSame('d1:al1:ni1ee1:bl1:ni2eee', B::serialize(array('a'=>array('n',1),'b'=>array('n',2))));
-        $this->assertSame('d1:ad1:ni1ee1:bd1:ni2eee', B::serialize(array('a'=>array('n'=>1),'b'=>array('n'=>2))));
+        $this->assertSame('d1:al1:ni1ee1:bl1:ni2eee', B::encode(array('a'=>array('n',1),'b'=>array('n',2))));
+        $this->assertSame('d1:ad1:ni1ee1:bd1:ni2eee', B::encode(array('a'=>array('n'=>1),'b'=>array('n'=>2))));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testNamedArrayDeserialization()
+    public function testNamedArrayDecoding()
     {
-        $this->assertSame(array(), B::unserialize('de'));
+        $this->assertSame(array(), B::decode('de'));
 
-        $this->assertSame(array('a'=>1,'b'=>2,'c'=>3), B::unserialize('d1:ai1e1:bi2e1:ci3ee'));
-        $this->assertSame(array(2,'a'=>1,'c'=>3), B::unserialize('d1:0i2e1:ai1e1:ci3ee'));
+        $this->assertSame(array('a'=>1,'b'=>2,'c'=>3), B::decode('d1:ai1e1:bi2e1:ci3ee'));
+        $this->assertSame(array(2,'a'=>1,'c'=>3), B::decode('d1:0i2e1:ai1e1:ci3ee'));
 
-        $this->assertSame(array('a'=>array('n',1),'b'=>array('n',2)), B::unserialize('d1:al1:ni1ee1:bl1:ni2eee'));
-        $this->assertSame(array('a'=>array('n'=>1),'b'=>array('n'=>2)), B::unserialize('d1:ad1:ni1ee1:bd1:ni2eee'));
+        $this->assertSame(array('a'=>array('n',1),'b'=>array('n',2)), B::decode('d1:al1:ni1ee1:bl1:ni2eee'));
+        $this->assertSame(array('a'=>array('n'=>1),'b'=>array('n'=>2)), B::decode('d1:ad1:ni1ee1:bd1:ni2eee'));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testDeserializationAllowsIntegerKeysForDictionaries()
+    public function testDecoderAllowsIntegerKeysForDictionaries()
     {
-        $this->assertSame(array(1 => 'a'), B::unserialize('di1e1:ae'));
+        $this->assertSame(array(1 => 'a'), B::decode('di1e1:ae'));
     }
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testBooleanSerialization()
+    public function testBooleanEncoding()
     {
-        $this->assertSame('i1e', B::serialize(true));
-        $this->assertSame('i0e', B::serialize(false));
+        $this->assertSame('i1e', B::encode(true));
+        $this->assertSame('i0e', B::encode(false));
     }
 
     /**
-     * @group serialization
-     * @expectedException Bencoder\SerializationException
-     * @expectedExceptionMessage Invalid type for serialization: NULL
+     * @group encoding
+     * @expectedException Bencoder\EncodingException
+     * @expectedExceptionMessage Invalid type for encoding: NULL
      */
-    public function testIntegerSerializationFailsOnNull()
+    public function testIntegerEncodingFailsOnNull()
     {
-        B::serialize(null);
+        B::encode(null);
     }
 
     /**
-     * @group serialization
-     * @expectedException Bencoder\SerializationException
-     * @expectedExceptionMessage Invalid type for serialization: object
+     * @group encoding
+     * @expectedException Bencoder\EncodingException
+     * @expectedExceptionMessage Invalid type for encoding: object
      */
-    public function testSerializationFailsOnNotSupportedObjectTypes()
+    public function testEncodingFailsOnNotSupportedObjectTypes()
     {
-        B::serialize(new \stdClass());
+        B::encode(new \stdClass());
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testDeserializationHandlesSequenceOfEmptyStrings()
+    public function testDecoderHandlesSequenceOfEmptyStrings()
     {
-        $this->assertSame(array('','',''), B::unserialize('l0:0:0:e'));
+        $this->assertSame(array('','',''), B::decode('l0:0:0:e'));
     }
 
     /**
-     * @group deserialization
-     * @expectedException Bencoder\DeserializationException
+     * @group decoding
+     * @expectedException Bencoder\DecodingException
      * @expectedExceptionMessage Invalid integer: 1.23
      */
-    public function testDeserializationFailsOnDoubleValues()
+    public function testDecodingFailsOnDoubleValues()
     {
-        B::unserialize('i1.23e');
+        B::decode('i1.23e');
     }
 
     /**
-     * @group deserialization
-     * @expectedException Bencoder\DeserializationException
+     * @group decoding
+     * @expectedException Bencoder\DecodingException
      * @expectedExceptionMessage Unknown prefix: a
      */
-    public function testDeserializationFailsOnInvalidBuffer()
+    public function testDecodingFailsOnInvalidBuffer()
     {
-        B::unserialize('abc');
+        B::decode('abc');
     }
 
     /**
-     * @group serialization
+     * @group encoding
      */
-    public function testComplexSerialization()
+    public function testComplexEncoding()
     {
         $tree = array(
             'letters' => array('a','b','c','d'),
@@ -230,13 +230,13 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
 
         $expected = 'd5:empty0:10:empty_listle7:lettersl1:a1:b1:c1:de5:mixedd1:ai1e1:bi2e1:ci3e1:di4ee7:numbersli1ei2ei3ei4ee7:subtreed5:empty0:10:empty_listle7:lettersl1:a1:b1:c1:de5:mixedd1:ai1e1:bi2e1:ci3e1:di4ee7:numbersli1ei2ei3ei4eeee';
 
-        $this->assertSame($expected, B::serialize($tree));
+        $this->assertSame($expected, B::encode($tree));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testComplexDeserialization()
+    public function testComplexDecoding()
     {
         $tree = array(
             'empty' => '',
@@ -249,15 +249,15 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
 
         $buffer = 'd5:empty0:10:empty_listle7:lettersl1:a1:b1:c1:de5:mixedd1:ai1e1:bi2e1:ci3e1:di4ee7:numbersli1ei2ei3ei4ee7:subtreed5:empty0:10:empty_listle7:lettersl1:a1:b1:c1:de5:mixedd1:ai1e1:bi2e1:ci3e1:di4ee7:numbersli1ei2ei3ei4eeee';
 
-        $this->assertSame($tree, B::unserialize($buffer));
+        $this->assertSame($tree, B::decode($buffer));
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
-    public function testDeserializationFromFile()
+    public function testDecodingFromFile()
     {
-        $torrent = B::unserializeFromFile(__DIR__.'/../../examples/xubuntu-10.10-alternate-amd64.iso.torrent');
+        $torrent = B::decodeFromFile(__DIR__.'/../../examples/xubuntu-10.10-alternate-amd64.iso.torrent');
 
         $this->assertInternalType('array', $torrent);
         $this->assertInternalType('array', $torrent['info']);
@@ -266,7 +266,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group serialization
+     * @group encoding
      */
     public function testConversionFromJSON()
     {
@@ -277,7 +277,7 @@ class BencodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group deserialization
+     * @group decoding
      */
     public function testConversionToJSON()
     {

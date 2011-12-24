@@ -13,7 +13,7 @@ require __DIR__.'/../autoload.php';
 
 use Bencoder\Bencode;
 
-$torrent = Bencode::unserializeFromFile(__DIR__.'/../examples/xubuntu-10.10-alternate-amd64.iso.torrent');
+$torrent = Bencode::decodeFromFile(__DIR__.'/../examples/xubuntu-10.10-alternate-amd64.iso.torrent');
 
 // Remove info.pieces as it would print too much binary garbage.
 unset($torrent['info']['pieces']);

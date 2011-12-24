@@ -28,7 +28,7 @@ class Bencode
      * @param int|string|array|boolean $object Object to serialize.
      * @return string
      */
-    public static function serialize($object)
+    public static function encode($object)
     {
         $serialized = "";
         self::decideEncode($object, $serialized);
@@ -63,7 +63,7 @@ class Bencode
                 break;
 
             default:
-                throw new SerializationException("Invalid type for serialization: $type", $object);
+                throw new EncodingException("Invalid type for encoding: $type", $object);
         }
     }
 
@@ -151,7 +151,7 @@ class Bencode
     private static function sortDictionary($dictionary)
     {
         if (!ksort($dictionary, SORT_STRING)) {
-            throw new SerializationException('Failed to sort dictionary', $dictionary);
+            throw new EncodingException('Failed to sort dictionary', $dictionary);
         }
 
         return $dictionary;
@@ -164,7 +164,7 @@ class Bencode
      * @param string $buffer Buffer containing the serialized data.
      * @return mixed
      */
-    public static function unserialize($buffer)
+    public static function decode($buffer)
     {
         $offset = 0;
         $object = self::decodeEntry($buffer, $offset);
@@ -178,14 +178,14 @@ class Bencode
      * @param string $path Path of the file.
      * @return mixed
      */
-    public static function unserializeFromFile($path)
+    public static function decodeFromFile($path)
     {
         if (!file_exists($path)) {
             throw new \RuntimeException("File $path does not exist");
         }
 
         $buffer = file_get_contents($path);
-        $object = self::unserialize($buffer);
+        $object = self::decode($buffer);
 
         return $object;
     }
@@ -212,7 +212,7 @@ class Bencode
 
                     $key = self::decodeEntry($buffer, $offset);
                     if (!is_string($key) && !is_numeric($key)) {
-                        throw new DeserializationException("One of the dictionary keys is not a string or an integer: " . gettype($key), $offset);
+                        throw new DecodingException("One of the dictionary keys is not a string or an integer: " . gettype($key), $offset);
                     }
                     $dictionary[$key] = self::decodeEntry($buffer, $offset);
                 }
@@ -248,7 +248,7 @@ class Bencode
                 return $number;
 
             default:
-                throw new DeserializationException("Unknown prefix: $byte", $offset);
+                throw new DecodingException("Unknown prefix: $byte", $offset);
         }
     }
 
@@ -262,7 +262,7 @@ class Bencode
     private static function getStringFromBuffer($buffer, &$offset)
     {
         if (($length = self::getIntegerFromBuffer($buffer, $offset, ':')) < 0) {
-            throw new DeserializationException("Invalid string length: $length", $offset);
+            throw new DecodingException("Invalid string length: $length", $offset);
         }
 
         if ($length == 0) {
@@ -294,7 +294,7 @@ class Bencode
 
         $integer = (int) $numeric;
         if ($numeric != $integer) {
-            throw new DeserializationException("Invalid integer: $numeric", $offsetMarker);
+            throw new DecodingException("Invalid integer: $numeric", $offsetMarker);
         }
 
         return $integer;
@@ -308,7 +308,7 @@ class Bencode
      */
     public static function convertToJSON($bencode, $options = 0)
     {
-        $object = self::unserialize($bencode);
+        $object = self::decode($bencode);
         $json = json_encode($object, $options);
 
         return $json;
@@ -323,7 +323,7 @@ class Bencode
     public static function convertFromJSON($json)
     {
         $object = json_decode($json, true);
-        $bencode = self::serialize($object);
+        $bencode = self::encode($object);
 
         return $bencode;
     }
