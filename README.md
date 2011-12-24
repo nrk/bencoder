@@ -6,10 +6,9 @@ __Bencoder__ is an utility class implemented in pure PHP that handles the serial
 using the [Bencode](http://en.wikipedia.org/wiki/Bencode) encoding format.
 
 The original implementation of this class dates back to the early months of 2004 and it has been somewhat adapted
-and updated in order to work with modern versions of the PHP interpreter right before making it public. It does
-not ship with any kind of tests yet (sorry, I was still ignorant back then!) but I will add them in some spare time.
-Basically I am making this library open source just because someone might find it useful and it would be a shame to
-let it rot in the meanders of my backups.
+and updated in order to work with modern versions of the PHP interpreter right before making it public. Basically
+I am making this library open source just because someone might find it useful and it would be a shame to let it
+rot in the meanders of my backups.
 
 ### Implementation details ###
 
