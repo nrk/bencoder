@@ -2,15 +2,19 @@
 
 namespace Bencoder;
 
-class DeserializationException extends \Exception {
+class DeserializationException extends \Exception
+{
     private $_offset;
 
-    public function __construct($message, $bufferOffset) {
+    public function __construct($message, $bufferOffset)
+    {
         parent::__construct($message);
+
         $this->_offset = $bufferOffset;
     }
 
-    public function getOffset() {
+    public function getOffset()
+    {
         return $this->_offset;
     }
 }

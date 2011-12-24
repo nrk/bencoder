@@ -2,15 +2,19 @@
 
 namespace Bencoder;
 
-class SerializationException extends \Exception {
+class SerializationException extends \Exception
+{
     private $_object;
 
-    public function __construct($message, $object) {
+    public function __construct($message, $object)
+    {
         parent::__construct($message);
+
         $this->_object = $object;
     }
 
-    public function getObject() {
+    public function getObject()
+    {
         return $this->_object;
     }
 }
